@@ -143,11 +143,6 @@ namespace TestSharpGL
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
         }
 
-        /// <summary>
-        /// The current rotation.
-        /// </summary>
-        private float rotation = 0.0f;
-
       
     }
 }

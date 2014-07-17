@@ -156,6 +156,9 @@ namespace TestSharpGL.VectorClass
         public void DrawSharp()
         {
             int size = m_shape.m_node.GetVertexNum();
+
+            if (size <= 0 )
+                return;
             Vector3D prp = sceneManager.scene.GetCurCamera().PRP;//暂时这样
             List<Vector2D> vector_Buffer = new List<Vector2D>();
             for (int index = 0; index < size;++index )
@@ -170,12 +173,9 @@ namespace TestSharpGL.VectorClass
             {
                 for (int index = 0; index < vector_Buffer.Count;index +=3 )
                 {
-                    if (index %3 != 3)
-                    {
-                        DrawLineByDDA(vector_Buffer[index], vector_Buffer[index + 1]);
-                        DrawLineByDDA(vector_Buffer[index+1], vector_Buffer[index + 2]);
-                        DrawLineByDDA(vector_Buffer[index + 2], vector_Buffer[index]);
-                    }
+                    DrawLineByDDA(vector_Buffer[index], vector_Buffer[(index + 1) % vector_Buffer.Count]);
+                    DrawLineByDDA(vector_Buffer[(index + 1) % vector_Buffer.Count], vector_Buffer[(index + 2) % vector_Buffer.Count]);
+                    DrawLineByDDA(vector_Buffer[(index + 2) % vector_Buffer.Count], vector_Buffer[index]);
                 }
             }
         }
@@ -208,6 +208,8 @@ namespace TestSharpGL.VectorClass
             float x;
             float dy, dx, y, m;
 
+            if (point1 == null || point2 == null)
+                return;
             Vector2D new_Point1 = new Vector2D(point1.V_Position);
             Vector2D new_Point2 = new Vector2D(point2.V_Position);
             if (new_Point1.X > new_Point2.X)
@@ -497,7 +499,7 @@ namespace TestSharpGL.VectorClass
 
 
 
-                        ET[(int)vertex2.V_Position.Y - ymin].Add(edge);
+                        ET[(int)(vertex2.V_Position.Y - ymin) % (ymax - ymin)].Add(edge);
                     }
                     else
                     {
@@ -506,7 +508,7 @@ namespace TestSharpGL.VectorClass
                        // edge.yMax = (int)vertex2.V_Position.Y;
                         edge.yMax = vertex22.V_Position.Y >= vertex2.V_Position.Y ? (int)(vertex2.V_Position.Y - 1) : (int)vertex2.V_Position.Y;
 
-                        ET[(int)vertex1.V_Position.Y - ymin].Add(edge);
+                        ET[(int)(vertex1.V_Position.Y - ymin)%(ymax-ymin)].Add(edge);
                     }
                 }
             }

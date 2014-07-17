@@ -11,7 +11,7 @@ namespace TestSharpGL.VectorClass
         Rectangle
     }
     /************************************************************************/
-    /* 形状类                                                               */
+    /* 形状类（是否新建一个实体类，该实体类由多个Shape组成）                */
     /************************************************************************/
 
     class Shape
@@ -42,44 +42,61 @@ namespace TestSharpGL.VectorClass
             return true;
         }
 
+        /// <summary>
+        /// 计算<v1,v2>（有向边）与裁剪边的交点
+        /// </summary>
+        /// <param name="v1">有向边的始点</param>
+        /// <param name="v2">有向边的终点</param>
+        /// <param name="clipBoundary">裁剪边</param>
+        /// <returns><v1,v2>与裁剪边的交点</returns>
         public Vertex InterSect(Vertex v1, Vertex v2, Shape clipBoundary)
         {
             Vertex newVertex = new Vertex();
 
-            if (clipBoundary.m_node.Vertexs[0].V_Position.Y == clipBoundary.m_node.Vertexs[1].V_Position.Y)
+            if (clipBoundary.m_node.Vertexs[0].V_Position.Y == clipBoundary.m_node.Vertexs[1].V_Position.Y)//水平裁剪边
             {
+                //交点的坐标的Y值与端点的Y值相等
                 newVertex.V_Position.Y = clipBoundary.m_node.Vertexs[0].V_Position.Y;
+                //计算交点的X值得坐标
                 newVertex.V_Position.X = v1.V_Position.X + (clipBoundary.m_node.Vertexs[0].V_Position.Y - v1.V_Position.Y)
                     * (v2.V_Position.X - v1.V_Position.X) / (v2.V_Position.Y - v1.V_Position.Y);
 
+                //根据端点的颜色值，使用Grourand着色方法进行插值，获取新顶点的颜色值
                 Vector3D color1 = new Vector3D(v1.V_Color.R,v1.V_Color.G,v1.V_Color.B);
                 Vector3D color2 = new Vector3D(v2.V_Color.R, v2.V_Color.G, v2.V_Color.B);
 
                 Vector3D color = ( newVertex.V_Position.Y -v1.V_Position.Y ) /( v1.V_Position.Y - v2.V_Position.Y) * color1
-                    + (v1.V_Position.Y - newVertex.V_Position.Y) / 
-                    (v1.V_Position.Y - v2.V_Position.Y) * color2;
+                    + (v1.V_Position.Y - newVertex.V_Position.Y) /(v1.V_Position.Y - v2.V_Position.Y) * color2;
                 newVertex.V_Color = Color.FromArgb((int)Math.Abs(color.X % 255), (int)Math.Abs(color.Y % 255), (int)Math.Abs(color.Z % 255));
             }
-            else
+            else//垂直裁剪边
             {
                 newVertex.V_Position.X = clipBoundary.m_node.Vertexs[0].V_Position.X;
                 newVertex.V_Position.Y = v1.V_Position.Y + (clipBoundary.m_node.Vertexs[0].V_Position.X - v1.V_Position.X)
                     * (v2.V_Position.Y - v1.V_Position.Y) / (v2.V_Position.X - v1.V_Position.X);
 
-                newVertex.V_Color = v1.V_Color;
+                if ((int)v1.V_Position.Y != (int)v2.V_Position.Y)
+                {
+                    Vector3D color1 = new Vector3D(v1.V_Color.R, v1.V_Color.G, v1.V_Color.B);
+                    Vector3D color2 = new Vector3D(v2.V_Color.R, v2.V_Color.G, v2.V_Color.B);
+                    Vector3D color = (newVertex.V_Position.Y - v1.V_Position.Y) / (v1.V_Position.Y - v2.V_Position.Y) * color1
+                        + (v1.V_Position.Y - newVertex.V_Position.Y) / (v1.V_Position.Y - v2.V_Position.Y) * color2;
+                    newVertex.V_Color = Color.FromArgb((int)Math.Abs(color.X % 255), (int)Math.Abs(color.Y % 255), (int)Math.Abs(color.Z % 255));
+                }
+                else
+                {
+                    newVertex.V_Color = v1.V_Color;
+                }
             }
             return newVertex;
         }
 
         /// <summary>
-        /// 
+        /// 测试顶点vertex与裁剪边的内外关系
         /// </summary>
-        /// <param name="vertex"></param>
-        /// <param name="xmin"></param>
-        /// <param name="ymin"></param>
-        /// <param name="xmax"></param>
-        /// <param name="ymax"></param>
-        /// <returns></returns>
+        /// <param name="vertex">待测试顶点</param>
+        /// <param name="clipBoundary">裁剪边</param>
+        /// <returns>当vertex位于内侧时，返回true，否则返回false</returns>
         Boolean Inside(Vertex vertex, Shape clipBoundary)
         {
            if (clipBoundary.m_node.Vertexs[1].V_Position.X > clipBoundary.m_node.Vertexs[0].V_Position.X)
@@ -105,24 +122,35 @@ namespace TestSharpGL.VectorClass
            return false;
         }
 
+        /// <summary>
+        /// 将一个顶点加入到新的新的多边形节点中
+        /// </summary>
+        /// <param name="vertex">新加入的顶点</param>
+        /// <param name="newShape">顶点存放的多边形</param>
         void Output(Vertex vertex, ref Shape newShape)
         {
             newShape.m_node.Vertexs.Add(vertex);
         }
 
+        /// <summary>
+        /// Sutherland-Hodgman裁剪算法实现
+        /// </summary>
+        /// <param name="shapeIn">输入的多边形的形状</param>
+        /// <param name="clipBoundary">裁剪边</param>
+        /// <returns>新的多边形</returns>
         Shape SutherlandHodgmanPolygonClip(Shape shapeIn, Shape clipBoundary)
         {
+            //<s,p>表示有向边
             Vertex s = new Vertex();
             Vertex p = new Vertex();
             Vertex I = new Vertex();
             Shape shapeOut = new Shape();
             int size = shapeIn.m_node.GetVertexNum();
 
-            //这个地方有问题，当向上移动的时候，会出现shapeIn 为空的情况，暂时不知道为什么
-            if (size <= 1)
-            {
+            //多边形以Vn,V0,V1,V2...Vn-1表示，对边VnV0进行处理
+
+            if (size < 1)
                 return null;
-            }
             s = shapeIn.m_node.Vertexs[size - 1];
 
             for (int j = 0; j < size; ++j)
@@ -130,21 +158,22 @@ namespace TestSharpGL.VectorClass
                 p = shapeIn.m_node.Vertexs[j];
                 if (Inside(p, clipBoundary))
                 {
-                    if (Inside(s, clipBoundary))
-                        Output(p, ref shapeOut);
-                    else
+
+                    if (Inside(s, clipBoundary))//p点在裁剪边的内侧,s点也在裁剪边的内侧
+                        Output(p, ref shapeOut);//（s、p完全落在裁剪窗口的内侧，将p输出到结果多边形中）
+                    else//p点在裁剪边的内侧，s在裁剪边的外侧，交点I和p都是结果多边形的顶点，应该先输出I，再输出P
                     {
                         I = InterSect(s,p,clipBoundary);
                         Output(I,ref shapeOut);
                         Output(p,ref shapeOut);
                     }
                 }
-                else if (Inside(s, clipBoundary))
+                else if (Inside(s, clipBoundary))//p点在裁剪边的外侧，s点在裁剪边的内侧
                 {
-                    I = InterSect(s,p,clipBoundary);
+                    I = InterSect(s,p,clipBoundary);//计算出sp月裁剪边的交点，并输出I
                     Output(I, ref shapeOut);
                 }
-                s = p;
+                s = p;//s指向顶点p，p在下次循环指向下一个顶点
             }
             return shapeOut;
         }
@@ -156,22 +185,33 @@ namespace TestSharpGL.VectorClass
 
             clipBoundary.m_node.Add(new Vertex(xmin, ymax, 0));
             clipBoundary.m_node.Add(new Vertex(xmin, ymin, 0));
-            newShape = new Shape(SutherlandHodgmanPolygonClip(this, clipBoundary).m_node);
+            Node node = SutherlandHodgmanPolygonClip(this, clipBoundary).m_node;
+            if (node != null)
+                newShape = new Shape(node);
 
             clipBoundary.m_node.Vertexs.Clear();
             clipBoundary.m_node.Add(new Vertex(xmin, ymin, 0));
             clipBoundary.m_node.Add(new Vertex(xmax, ymin, 0));
-            newShape = new Shape(SutherlandHodgmanPolygonClip(newShape, clipBoundary).m_node);
+            if (newShape.m_node.Vertexs.Count != 0)
+                node = SutherlandHodgmanPolygonClip(newShape, clipBoundary).m_node;
+            if (node != null)
+                newShape = new Shape(node);
 
             clipBoundary.m_node.Vertexs.Clear();
             clipBoundary.m_node.Add(new Vertex(xmax, ymin, 0));
             clipBoundary.m_node.Add(new Vertex(xmax, ymax, 0));
-            newShape = new Shape(SutherlandHodgmanPolygonClip(newShape, clipBoundary).m_node);
+            if (newShape.m_node.Vertexs.Count != 0)
+                node = SutherlandHodgmanPolygonClip(newShape, clipBoundary).m_node;
+            if (node != null)
+                newShape = new Shape(node);
 
             clipBoundary.m_node.Vertexs.Clear();
             clipBoundary.m_node.Add(new Vertex(xmax, ymax, 0));
             clipBoundary.m_node.Add(new Vertex(xmin, ymax, 0));
-            newShape = new Shape(SutherlandHodgmanPolygonClip(newShape, clipBoundary).m_node);
+            if (newShape.m_node.Vertexs.Count != 0)
+                node = SutherlandHodgmanPolygonClip(newShape, clipBoundary).m_node;
+            if (node != null)
+                newShape = new Shape(node);
 
             return newShape;
         }
@@ -212,5 +252,13 @@ namespace TestSharpGL.VectorClass
 
             return v/v.Module();
         }
+    }
+
+    /// <summary>
+    /// 矩形类
+    /// </summary>
+    class RectangleShape : Shape
+    {
+
     }
 }
