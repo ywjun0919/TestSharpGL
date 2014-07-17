@@ -21,6 +21,9 @@ namespace TestSharpGL
         Camera camera;
         SceneManager sceneManager = SceneManager.CreateSceneManager();
         Shape shape = new Shape();
+
+        Entity entity = new Entity();
+
         void StateChange(uint newState)
         {
             state = newState;
@@ -61,6 +64,7 @@ namespace TestSharpGL
             //node.Add(new Vertex(-50.0f, -50.0f, -50.0f, Color.Green));
             //node.Add(new Vertex(-50.0f, -50.0f, 50.0f, Color.Blue));
             #endregion
+
             node.Add(new Vertex(Common.WorldTransform( new Vector3D( 0.0f, 50.0f, 0.0f),camera), Color.Red));
             node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, 50.0f), camera), Color.Blue));
             node.Add(new Vertex(Common.WorldTransform( new Vector3D(50.0f, -50.0f, 50.0f),camera), Color.Yellow));
@@ -76,6 +80,7 @@ namespace TestSharpGL
             node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red));
             node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, -50.0f), camera), Color.Green));
             node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, 50.0f), camera), Color.Blue));
+
             shape = new Shape(node);
             Vector3D v1 = new Vector3D(-50.0f, -50.0f, 50.0f);
         }
@@ -128,6 +133,15 @@ namespace TestSharpGL
                 draw.End();
                 Rotation(graphics,5);
 
+            }
+            else if (4 == state)
+            {
+                draw.Begin(graphics);
+                bmp = new Bitmap(1000, 1000);
+                draw = new Draw(bmp);
+                draw.Begin(graphics);
+                draw.DrawEntity(entity);
+                draw.End();
             }
         }
 
@@ -287,12 +301,23 @@ namespace TestSharpGL
             this.Refresh();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button_AddTexture_Click(object sender, EventArgs e)
         {
+            Bitmap image = new Bitmap(@"D:\1359913743_8809.jpg");
+
+            //shape2.m_node.Add();
+            Shape shape = new Shape();
+
+            shape.m_node.Add(new Vertex(0,0,0));
+            shape.m_node.Add(new Vertex(100, 0, 0));
+            shape.m_node.Add(new Vertex(100, 100, 0));
+            shape.m_node.Add(new Vertex(0, 0, 100));
+
+            entity.AddShape(shape);
+            Color color =image.GetPixel(1,1);
             StateChange(4);
             this.Refresh();
         }
-
 
     }
 

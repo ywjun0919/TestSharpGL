@@ -33,12 +33,14 @@
             this.button_Light = new System.Windows.Forms.Button();
             this.button_Triangle = new System.Windows.Forms.Button();
             this.LineTest = new System.Windows.Forms.Button();
+            this.button_AddTexture = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.panel1.Controls.Add(this.button_AddTexture);
             this.panel1.Controls.Add(this.button_Rotation);
             this.panel1.Controls.Add(this.button_Light);
             this.panel1.Controls.Add(this.button_Triangle);
@@ -88,6 +90,16 @@
             this.LineTest.UseVisualStyleBackColor = true;
             this.LineTest.Click += new System.EventHandler(this.LineTest_Click);
             // 
+            // button_AddTexture
+            // 
+            this.button_AddTexture.Location = new System.Drawing.Point(4, 148);
+            this.button_AddTexture.Name = "button_AddTexture";
+            this.button_AddTexture.Size = new System.Drawing.Size(75, 23);
+            this.button_AddTexture.TabIndex = 4;
+            this.button_AddTexture.Text = "添加纹理";
+            this.button_AddTexture.UseVisualStyleBackColor = true;
+            this.button_AddTexture.Click += new System.EventHandler(this.button_AddTexture_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -111,6 +123,7 @@
         private System.Windows.Forms.Button button_Triangle;
         private System.Windows.Forms.Button button_Light;
         private System.Windows.Forms.Button button_Rotation;
+        private System.Windows.Forms.Button button_AddTexture;
 
     }
 }

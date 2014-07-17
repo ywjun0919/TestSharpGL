@@ -260,5 +260,36 @@ namespace TestSharpGL.VectorClass
     class RectangleShape : Shape
     {
 
+        public RectangleShape(Vertex v1, Vertex v2,Vertex v3,Vertex v4)
+        {
+            m_node.Vertexs.Add(v1);
+            m_node.Vertexs.Add(v2);
+            m_node.Vertexs.Add(v3);
+            m_node.Vertexs.Add(v4);
+        }
+
+        public Vertex V1
+        {
+            get { return m_node.Vertexs[0]; }
+            set { m_node.Vertexs[0] = value; }
+        }
+
+        public Vertex V2
+        {
+            get { return m_node.Vertexs[1]; }
+            set { m_node.Vertexs[1] = value; }
+        }
+
+        public Vertex V3
+        {
+            get { return m_node.Vertexs[2]; }
+            set { m_node.Vertexs[2] = value; }
+        }
+
+        public Vertex V4
+        {
+            get { return m_node.Vertexs[3]; }
+            set { m_node.Vertexs[3] = value; }
+        }
     }
 }

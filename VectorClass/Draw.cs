@@ -376,6 +376,16 @@ namespace TestSharpGL.VectorClass
             }
         }
 
+        //画实体
+        public void DrawEntity(Entity entity)
+        {
+            int size =entity.GetEntity().Count;
+            for (int i = 0; i < size; ++i)
+            {
+                PolygonFill(entity.GetEntity()[i]);
+            }
+        }
+        
         class Edge
         {
            public int yMax;

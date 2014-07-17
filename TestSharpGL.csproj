@@ -71,6 +71,7 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="VectorClass\Entity.cs" />
     <Compile Include="VectorClass\Scene.cs" />
     <Compile Include="SharpGLForm.cs">
       <SubType>Form</SubType>
