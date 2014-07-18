@@ -17,7 +17,9 @@ namespace TestSharpGL.VectorClass
 
         public void AddShape(Shape shape)
         {
-            m_Entity.Add(shape);
+            Shape newShape = new Shape(shape.m_node);
+            newShape.SetTexture(shape.m_texture);
+            m_Entity.Add(newShape);
         }
     }
 }

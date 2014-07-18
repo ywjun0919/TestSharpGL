@@ -104,13 +104,7 @@ namespace TestSharpGL.VectorClass
             return mSum;
         }
 
-        /************************************************************************/
-        /*矩阵转置                                                              */
-        /************************************************************************/
-        public bool Inverse() 
-        {
-            return false;
-        }
+
         /************************************************************************/
         /* 向量与矩阵的乘法（左乘）                                                     */
         /************************************************************************/
@@ -218,6 +212,50 @@ namespace TestSharpGL.VectorClass
             newMatrix.m[2, 0] = 0.0f; newMatrix.m[2, 1] = 0.0f; newMatrix.m[2, 2] = 1.0f;
 
             return newMatrix;
+        }
+        /************************************************************************/
+        /*矩阵转置                                                              */
+        /************************************************************************/
+        public bool Inverse(ref Matrix3D rkInverse) 
+        {
+            // Invert a 3x3 using cofactors.  This is about 8 times faster than
+            // the Numerical Recipes code which uses Gaussian elimination.
+
+            rkInverse.m[0,0] = m[1,1]*m[2,2] -
+                m[1,2]*m[2,1];
+            rkInverse.m[0,1] = m[0,2]*m[2,1] -
+                m[0,1]*m[2,2];
+            rkInverse.m[0,2] = m[0,1]*m[1,2] -
+                m[0,2]*m[1,1];
+            rkInverse.m[1,0] = m[1,2]*m[2,0] -
+                m[1,0]*m[2,2];
+            rkInverse.m[1,1] = m[0,0]*m[2,2] -
+                m[0,2]*m[2,0];
+            rkInverse.m[1,2] = m[0,2]*m[1,0] -
+                m[0,0]*m[1,2];
+            rkInverse.m[2,0] = m[1,0]*m[2,1] -
+                m[1,1]*m[2,0];
+            rkInverse.m[2,1] = m[0,1]*m[2,0] -
+                m[0,0]*m[2,1];
+            rkInverse.m[2,2] = m[0,0]*m[1,1] -
+                m[0,1]*m[1,0];
+
+            float fDet =
+                m[0,0]*rkInverse.m[0,0] +
+                m[0,1]*rkInverse.m[1,0]+
+                m[0,2]*rkInverse.m[2,0];
+
+            if ( Math.Abs(fDet) <= 0.000001 )
+                return false;
+
+            float fInvDet = 1.0f/fDet;
+            for (int iRow = 0; iRow < 3; iRow++)
+            {
+                for (int iCol = 0; iCol < 3; iCol++)
+                    rkInverse.m[iRow,iCol] *= fInvDet;
+            }
+
+            return true;
         }
     }
 }

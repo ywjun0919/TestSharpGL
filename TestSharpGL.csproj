@@ -90,6 +90,7 @@
     <Compile Include="VectorClass\Matrix4D.cs" />
     <Compile Include="VectorClass\Node.cs" />
     <Compile Include="VectorClass\PointLight.cs" />
+    <Compile Include="VectorClass\Texture.cs" />
     <Compile Include="VectorClass\TransformMatrix.cs" />
     <Compile Include="VectorClass\Shape.cs" />
     <Compile Include="VectorClass\Vector.cs" />

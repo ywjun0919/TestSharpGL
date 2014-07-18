@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 
 namespace TestSharpGL.VectorClass
 {
@@ -95,6 +96,71 @@ namespace TestSharpGL.VectorClass
         {
             float fd = 1.0f/(C0 + C1* d + C2 * d * d);
             return fd < 1 ? fd : 1;
+        }
+
+        public static Vertex GetTextureLocation(Vertex v, Vertex v1, Vertex v2, Vertex v3)
+        {
+            //Matrix4D matrix = new Matrix4D(
+            //    v1.V_Position.X - v2.V_Position.X,v3.V_Position.X - v2.V_Position.X,0,0,
+            //    v1.V_Position.Y - v2.V_Position.Y,v3.V_Position.Y - v2.V_Position.Y,0,0,
+            //    v1.V_Position.Z - v2.V_Position.Z,v3.V_Position.Z - v2.V_Position.Z,1,1,
+            //    0,0,1,1
+            //    );
+            //Matrix4D matrix1 = matrix.inverse();
+
+            //float a = v1.V_Position.X - v2.V_Position.X;
+            //float b = v3.V_Position.X - v2.V_Position.X;
+            //float c = v1.V_Position.Y - v2.V_Position.Y;
+            //float d = v3.V_Position.Y - v2.V_Position.Y;
+
+            //float mode = a*d - c*b;
+
+            //Matrix4D matrix = new Matrix4D(
+            //    a,-b,0,0,
+            //    -c,d,0,0,
+            //    0,0,1,0,
+            //    0,0,0,1
+            //    );
+
+            //Vector3D vector1 = new Vector3D(v.V_Position.X - v2.V_Position.X, v.V_Position.Y - v2.V_Position.Y, v.V_Position.Z - v2.V_Position.Z) ;
+            //Vector3D coeff_Vector = new Vector3D(v.V_Position.X - v2.V_Position.X, v.V_Position.Y - v2.V_Position.Y, v.V_Position.Z - v2.V_Position.Z) * matrix / mode;
+
+            //float s = coeff_Vector.X * (v1.S - v2.S) + coeff_Vector.X * (v3.S - v2.S) + v2.S;
+            //float t = coeff_Vector.Y * (v1.T - v2.T) + coeff_Vector.Y * (v3.T - v2.T) + v2.T;
+
+            //v.S = Math.Abs(s);
+            //v.T = Math.Abs(t);
+            //if (v.S > 1)
+            //    v.S = 1;
+            //if (v.T > 1)
+            //    v.T = 1;
+
+            Matrix3D matrix = new Matrix3D(
+                v1.V_Position.X ,v2.V_Position.X,v3.V_Position.X,
+                v1.V_Position.Y,v2.V_Position.Y,v3.V_Position.Y,
+                1,1,1
+                );
+            Matrix3D inverse_Matrix = new Matrix3D();
+            matrix.Inverse(ref inverse_Matrix);
+
+            Vector3D coef =  new Vector3D(v.V_Position.X, v.V_Position.Y, 1) * inverse_Matrix;
+            float s = coef.X * v1.S + coef.X * v2.S + coef.X *v3.S;
+            float t = coef.Y * v1.T + coef.Y * v2.T + coef.Y * v3.T;
+
+            v.S = s;
+            v.T = t;
+            return v;
+        }
+
+        public static Color GetTextureColor(Bitmap bitmap,float s,float t)
+        {
+            int i = (int)(bitmap.Width * s);
+            int j = (int)(bitmap.Height * t);
+            if (i < 0 || j < 0)
+                return Color.Blue;
+            if (i >= bitmap.Width || j >= bitmap.Height)
+                return Color.Blue;
+            return bitmap.GetPixel(i,j);
         }
     }
 }

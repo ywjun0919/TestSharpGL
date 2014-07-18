@@ -65,22 +65,25 @@ namespace TestSharpGL
             //node.Add(new Vertex(-50.0f, -50.0f, 50.0f, Color.Blue));
             #endregion
 
-            node.Add(new Vertex(Common.WorldTransform( new Vector3D( 0.0f, 50.0f, 0.0f),camera), Color.Red));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, 50.0f), camera), Color.Blue));
-            node.Add(new Vertex(Common.WorldTransform( new Vector3D(50.0f, -50.0f, 50.0f),camera), Color.Yellow));
+            node.Add(new Vertex(Common.WorldTransform( new Vector3D( 0.0f, 50.0f, 0.0f),camera), Color.Red,0,0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, 50.0f), camera), Color.Blue,1,0));
+            node.Add(new Vertex(Common.WorldTransform( new Vector3D(50.0f, -50.0f, 50.0f),camera), Color.Yellow,0f,1f));
 
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, 50.0f), camera), Color.Yellow));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, -50.0f), camera), Color.Yellow));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red, 0, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, 50.0f), camera), Color.Yellow, 1, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, -50.0f), camera), Color.Yellow, 0f, 1f));
 
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, -50.0f), camera), Color.Yellow));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, -50.0f), camera), Color.Green));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red, 0, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, -50.0f), camera), Color.Yellow, 1, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, -50.0f), camera), Color.Green, 0f, 1f));
 
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, -50.0f), camera), Color.Green));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, 50.0f), camera), Color.Blue));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red, 0, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, -50.0f), camera), Color.Green, 1, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, 50.0f), camera), Color.Blue, 0f, 1f));
 
+            Bitmap image = new Bitmap(@"D:\1359913743_8809.jpg");
+            Texture texture = new Texture(image);
+            sceneManager.scene.TextureAdd(texture);
             shape = new Shape(node);
             Vector3D v1 = new Vector3D(-50.0f, -50.0f, 50.0f);
         }
@@ -179,10 +182,8 @@ namespace TestSharpGL
         public void Rotation(Graphics graphics, double theta)
         {
             
-           // System.Threading.Thread.Sleep(1000);
             bmp = new Bitmap(1000, 1000);
             Draw draw = new Draw(bmp);
-            //Node new_Node = new Node(node);
             
             for (int i = 0; i < node.GetVertexNum();++i )
             {
@@ -191,14 +192,28 @@ namespace TestSharpGL
 
             draw.Begin(graphics);
 
-            Vector3D v1 = new Vector3D(1, 2, 3);
-            Vector3D v2 = new Vector3D(3, 2, 3);
-            List<Vector3D> list_vector = new List<Vector3D>();
-            list_vector.Add(v1);
-            list_vector.Add(v2);
-
             draw.m_shape.m_node = node;
-            draw.DrawTriangle1();
+            Entity entity = new Entity();
+            int size = node.GetVertexNum();
+            Bitmap image = new Bitmap(@"D:\1359913743_8809.jpg");
+            Texture newTexture = new Texture(image);
+
+            String[] imagePath = new String[4] { @"D:\1359913743_8809.jpg", @"D:\1.jpg", @"D:\2.jpg", @"D:\3.jpg" }; 
+
+            for (int index = 0; index < size; index +=3)
+            {
+                Shape newShape = new Shape();
+                newShape.m_node.Add(node.Vertexs[index]);
+                newShape.m_node.Add(node.Vertexs[(index + 1) % size]);
+                newShape.m_node.Add(node.Vertexs[(index + 2)%size]);
+
+                if (index/3 < imagePath.Length)
+                {
+                    newShape.SetTexture(new Texture(new Bitmap(imagePath[index/3])));
+                }
+                entity.AddShape(newShape);
+            }
+            draw.DrawEntity(entity);
             draw.End();
         }
 
@@ -281,21 +296,21 @@ namespace TestSharpGL
             }
 
             node.Vertexs.Clear();
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, 50.0f), camera), Color.Blue));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, 50.0f), camera), Color.Yellow));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red, 0, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, 50.0f), camera), Color.Blue, 1, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, 50.0f), camera), Color.Yellow, 0f, 1f));
 
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, 50.0f), camera), Color.Yellow));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, -50.0f), camera), Color.Yellow));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red, 0, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, 50.0f), camera), Color.Yellow, 1, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, -50.0f), camera), Color.Yellow, 0f, 1f));
 
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, -50.0f), camera), Color.Yellow));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, -50.0f), camera), Color.Green));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red, 0, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(50.0f, -50.0f, -50.0f), camera), Color.Yellow, 1, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, -50.0f), camera), Color.Green, 0f, 1f));
 
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, -50.0f), camera), Color.Green));
-            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, 50.0f), camera), Color.Blue));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(0.0f, 50.0f, 0.0f), camera), Color.Red, 0, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, -50.0f), camera), Color.Green, 1, 0));
+            node.Add(new Vertex(Common.WorldTransform(new Vector3D(-50.0f, -50.0f, 50.0f), camera), Color.Blue, 0f, 1f));
 
             StateChange(3);
             this.Refresh();
@@ -306,15 +321,36 @@ namespace TestSharpGL
             Bitmap image = new Bitmap(@"D:\1359913743_8809.jpg");
 
             //shape2.m_node.Add();
-            Shape shape = new Shape();
+            Shape shape1 = new Shape();
+            Shape shape2 = new Shape();
+            Shape shape3 = new Shape();
+            Shape shape4 = new Shape();
 
-            shape.m_node.Add(new Vertex(0,0,0));
-            shape.m_node.Add(new Vertex(100, 0, 0));
-            shape.m_node.Add(new Vertex(100, 100, 0));
-            shape.m_node.Add(new Vertex(0, 0, 100));
+            camera.PRP = new Vector3D(0, 0, -200);
 
-            entity.AddShape(shape);
-            Color color =image.GetPixel(1,1);
+            sceneManager.scene.CameraAdd(camera);
+
+            bmp = new Bitmap(1000, 1000);
+
+            //draw = new Draw(bmp);
+            camera.VRP = new Vector3D(0, 0, 0);
+            camera.U = new Vector3D(1, 0, 0);
+            camera.V = new Vector3D(0, 1, 0);
+            camera.N = new Vector3D(0, 0, 1);
+            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-100, 0, 0), camera), Color.Blue, 0.0f, 0.0f));
+            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(100, 0, 0), camera), Color.Blue, 1.0f, 0.0f));
+            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(0, 50, 100), camera), Color.Blue, 0.0f, 1.0f));
+
+
+            entity.AddShape(shape1);
+            entity.AddShape(shape2);
+            entity.AddShape(shape3);
+            entity.AddShape(shape4);
+
+           // Color color =image.GetPixel(1,1);
+
+            //Texture texture = new Texture(image);
+            //sceneManager.scene.TextureAdd(texture);
             StateChange(4);
             this.Refresh();
         }

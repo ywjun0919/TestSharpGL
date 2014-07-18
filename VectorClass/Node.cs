@@ -33,7 +33,7 @@ namespace TestSharpGL.VectorClass
         //增加一个顶点
         public void Add( Vertex v)
         {
-            n_Vertexs.Add(new Vertex(v.V_Position,v.V_Color));
+            n_Vertexs.Add(new Vertex(v.V_Position,v.V_Color,v.S,v.T));
         }
 
         //删除指定位置的顶点

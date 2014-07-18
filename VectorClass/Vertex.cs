@@ -34,6 +34,8 @@ namespace TestSharpGL.VectorClass
         {
             v_Position = vertex.v_Position;
             v_Color = vertex.V_Color;
+            m_S = vertex.m_S;
+            m_T = vertex.m_T;
         }
 
         public Vertex(Vector3D vec) 
@@ -56,21 +58,53 @@ namespace TestSharpGL.VectorClass
             v_Color = color;
         }
 
+        public Vertex(float x, float y, float z, Color color,float s,float t)
+        {
+            v_Position.X = x;
+            v_Position.Y = y;
+            v_Position.Z = z;
+            v_Color = color;
+            m_S = s;
+            m_T = t;
+        }
+
         public Vertex(Vector3D vec, Color color) 
         {
             v_Color = color;
             v_Position = vec;
         }
-
+        public Vertex(Vector3D vec, Color color,float s,float t)
+        {
+            v_Color = color;
+            v_Position = vec;
+            m_S = s;
+            m_T = t;
+        }
         public object Clone()
         {
             Vertex v = new Vertex();
             v.v_Color = v_Color;
             v.v_Position = v_Position;
+            v.m_S = m_S;
+            v.m_T = m_T;
 
             return v;
         }
-        //纹理属性
+        
+        //纹理属性(s与t一般在[0,1])
+        float m_S=0.0f;
+        float m_T=0.0f;
+        public float S 
+        {
+            get { return m_S; }
+            set { m_S = value; }
+        }
+
+        public float T
+        {
+            get { return m_T; }
+            set { m_T = value; }
+        }
     }
 
 }

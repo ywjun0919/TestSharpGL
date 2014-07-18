@@ -20,11 +20,18 @@ namespace TestSharpGL.VectorClass
 
         public ShapeMode m_mode = ShapeMode.Triangle;
 
+        public Texture m_texture = new Texture();
+
         public Shape() { }
 
         public Shape(Node node)
         {
             m_node = node;
+            //int size = node.Vertexs.Count;
+            //for (int index = 0; index < size; ++size)
+            //{
+            //    m_node.Add(node.Vertexs[index]);
+            //}
         }
 
         public Shape(Node node, ShapeMode mode)
@@ -68,6 +75,8 @@ namespace TestSharpGL.VectorClass
                 Vector3D color = ( newVertex.V_Position.Y -v1.V_Position.Y ) /( v1.V_Position.Y - v2.V_Position.Y) * color1
                     + (v1.V_Position.Y - newVertex.V_Position.Y) /(v1.V_Position.Y - v2.V_Position.Y) * color2;
                 newVertex.V_Color = Color.FromArgb((int)Math.Abs(color.X % 255), (int)Math.Abs(color.Y % 255), (int)Math.Abs(color.Z % 255));
+
+                
             }
             else//垂直裁剪边
             {
@@ -178,6 +187,14 @@ namespace TestSharpGL.VectorClass
             return shapeOut;
         }
 
+        /// <summary>
+        /// 根据指定的窗口大小对形状进行剪切
+        /// </summary>
+        /// <param name="xmin">窗口左下角对应的x坐标值</param>
+        /// <param name="xmax">窗口右上角对应的x坐标值</param>
+        /// <param name="ymin">窗口左下角对应的y坐标值</param>
+        /// <param name="ymax">窗口右上角对应的y坐标值</param>
+        /// <returns>剪切完毕后的多边形</returns>
         public Shape Cut(int xmin, int xmax, int ymin, int ymax)
         {
             Shape newShape = new Shape();
@@ -214,6 +231,11 @@ namespace TestSharpGL.VectorClass
                 newShape = new Shape(node);
 
             return newShape;
+        }
+
+        public void SetTexture(Texture texture)
+        {
+            m_texture = texture;
         }
     }
 

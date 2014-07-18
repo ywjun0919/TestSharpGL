@@ -148,10 +148,21 @@ namespace TestSharpGL.VectorClass
         {
             int size = new_Shape.m_node.Vertexs.Count;
 
-            for (int index = 0; index < size; ++index)
-            {
-                DrawLineByDDA(new_Shape.m_node.Vertexs[index], new_Shape.m_node.Vertexs[(index+1)%size]);
-            }
+            //if (sceneManager.scene.GetCurTexture() == null)
+            //{
+                for (int index = 0; index < size; ++index)
+                {
+                    DrawLineByDDA(new_Shape.m_node.Vertexs[index], new_Shape.m_node.Vertexs[(index + 1) % size]);
+                }
+            //}
+            //else
+            //{
+            //    for (int index = 0; index < size; ++index)
+            //    {
+            //        DrawLineByDDA(new_Shape.m_node.Vertexs[index], new_Shape.m_node.Vertexs[(index + 1) % size]);
+            //    }
+            //}
+
         }
         public void DrawSharp()
         {
@@ -337,7 +348,7 @@ namespace TestSharpGL.VectorClass
             }
         }
 
-        public void DrawTriangle1()
+        public void DrawTriangle1(Entity entity)
         {
             int size = m_shape.m_node.GetVertexNum();
             Vector3D prp = sceneManager.scene.GetCurCamera().PRP;//暂时这样
@@ -353,7 +364,7 @@ namespace TestSharpGL.VectorClass
                         Vertex v = triangle.m_node.GetVertex(i);
                         sceneManager.ScenceRender(ref v, triangle.GetN());
                         Vector2D proVec = Common.ProjectTransform(prp, v.V_Position);
-                        vertex_Buffer.Add(new Vertex(proVec.X, proVec.Y, 1, v.V_Color));
+                        vertex_Buffer.Add(new Vertex(proVec.X, proVec.Y, 1, v.V_Color,v.S,v.T));
                     }
 
                 }
@@ -363,15 +374,21 @@ namespace TestSharpGL.VectorClass
             {
                 for (int index = 0; index < vertex_Buffer.Count; index += 3)
                 {
-                    if (index % 3 != 3)
-                    {
                         Triangle triangle = new Triangle(vertex_Buffer[index], vertex_Buffer[index + 1], vertex_Buffer[index + 2]);
-                        Shape shape = triangle.Cut(-50, 50, -50, 50);
-                        //Shape shape = triangle;
-                        PolygonFill(shape);
-                    }
-                    System.Console.WriteLine("Count:" + vertex_Buffer.Count);
-                    System.Console.WriteLine("..."+index);
+                    //裁剪的时候纹理特征也需要赋值的
+                       // Shape shape = triangle.Cut(-50, 50, -50, 50);
+                        Shape shape = triangle;
+                    //需要修改，测试用    
+                       // shape.SetTexture(sceneManager.scene.GetCurTexture());
+                        if (true == shape.m_texture.ISNULL())
+                        {
+                            PolygonFill(shape);
+                        }
+                        else
+                        {
+                            TextureFill(shape);
+                        }
+
                 }
             }
         }
@@ -382,7 +399,27 @@ namespace TestSharpGL.VectorClass
             int size =entity.GetEntity().Count;
             for (int i = 0; i < size; ++i)
             {
-                PolygonFill(entity.GetEntity()[i]);
+                int num = entity.GetEntity()[i].m_node.Vertexs.Count;
+
+                if (num <= 0)
+                    return;
+                Vector3D prp = sceneManager.scene.GetCurCamera().PRP;//暂时这样
+                Shape newShape = new Shape();
+                newShape.SetTexture(entity.GetEntity()[i].m_texture);
+                for (int index = 0; index < num; ++index)
+                {
+                    Vertex vertex = entity.GetEntity()[i].m_node.Vertexs[index];
+                    Vector2D proVec = Common.ProjectTransform(prp, vertex.V_Position);
+                    newShape.m_node.Add(new Vertex(proVec.X, proVec.Y,0,vertex.V_Color,vertex.S,vertex.T));
+                }
+                if (newShape.m_texture.ISNULL())
+                {
+                    PolygonFill(newShape);
+                }
+                else 
+                {
+                    TextureFill(newShape);
+                } 
             }
         }
         
@@ -526,6 +563,82 @@ namespace TestSharpGL.VectorClass
             return ET;
         }
 
+        //纹理添加
+
+        public void TextureFill(Shape shape)
+        {
+            int ymin = 0;
+            int ymax = 0;
+            GetPolygonMinMax(shape, ref ymin, ref ymax);
+
+            List<Edge>[] ET = InitScanLineETTable(shape, ymin, ymax);
+
+            List<Edge> AEL = new List<Edge>();
+            int y = ymin;
+            for (int i = 0; i < ymax - ymin; ++i)
+            {
+                int et_Count = ET[i].Count;
+                if (et_Count > 0)
+                {
+                    for (int j = 0; j < et_Count; ++j)
+                    {
+                        AEL.Add(ET[i][j]);
+                    }
+
+                    while (AEL.Count >= 2)
+                    {
+                        for (int j = 0; j < AEL.Count; j += 2)
+                        {
+                            Vertex v1 = new Vertex(AEL[j].x, y, 0, AEL[j].color);
+                            Vertex v2 = new Vertex(AEL[(j + 1) % AEL.Count].x, y, 0, AEL[(j + 1) % AEL.Count].color);
+                            
+                            DrawLineByDDA(v1, v2,shape);
+
+                            y++;
+                            AEL[j].x += AEL[j].deltax;
+                            AEL[(j + 1) % AEL.Count].x += AEL[(j + 1) % AEL.Count].deltax;
+
+                            if (AEL[(j + 1) % AEL.Count].yMax < y)
+                            {
+                                AEL.RemoveAt((j + 1) % AEL.Count);
+                            }
+                            if (AEL[j].yMax < y)
+                            {
+                                AEL.RemoveAt(j);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public void DrawLineByDDA(Vertex point1, Vertex point2,Shape shape)
+        {
+            if (shape.m_texture.ISNULL())
+            {
+                Console.WriteLine("错误的调用，形状的纹理还没有给定！！！");
+                return;
+            }
+            if (point1 == null || point2 == null)
+                return;
+            Vector2D new_Point1 = new Vector2D(point1.V_Position);
+            Vector2D new_Point2 = new Vector2D(point2.V_Position);
+            if (new_Point1.X > new_Point2.X)
+            {
+                new_Point1.SwapVector(new_Point2);
+            }
+
+            int x = (int)new_Point1.X;
+            int y = (int)new_Point1.Y;
+            int xmax = (int)new_Point2.X;
+            for (; x <= xmax; ++x)
+            {
+                Vertex vertex = new Vertex(x, y, 1);
+                vertex = Common.GetTextureLocation(new Vertex(x, y, 1), shape.m_node.Vertexs[shape.m_node.Vertexs.Count-1], shape.m_node.Vertexs[0], shape.m_node.Vertexs[1]);
+                color = shape.m_texture.GetTextureColor(vertex.S, vertex.T);
+                DrawPixel(new Vector2D(x, y),color);
+            }
+        }
         //（该方法仅限于使用矩形对多边形进行裁剪）
         /// <summary>
         /// shape1 被裁剪的多边形，shape2裁剪的多边形(换做了int xmin,int ymin,int xmax,int max)

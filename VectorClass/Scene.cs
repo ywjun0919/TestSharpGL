@@ -18,6 +18,9 @@ namespace TestSharpGL
 
         List<Camera> m_Camera = new List<Camera>();
 
+        //添加纹理(需要改变成为哪个图形添加那种纹理(已做，但是场景是否有纹理呢))
+
+        List<Texture> m_Texture = new List<Texture>();
         //添加图形
 
         public Scene() { }
@@ -32,9 +35,14 @@ namespace TestSharpGL
             m_Camera.Add(camera);
         }
 
+        public void TextureAdd(Texture texture)
+        {
+            m_Texture.Add(texture);
+        }
         //暂时一个光照
         int camera_Index = 0;
         int light_Index = 0;
+        int texture_Index = 0;
         public Camera GetCurCamera()
         {
             return m_Camera[camera_Index];
@@ -43,6 +51,11 @@ namespace TestSharpGL
         public Light GetCurLight()
         {
             return m_Light[light_Index];
+        }
+
+        public Texture GetCurTexture()
+        {
+            return m_Texture[0];
         }
 
         public List<Light> SceneLight
