@@ -209,7 +209,7 @@ namespace TestSharpGL
 
                 if (index/3 < imagePath.Length)
                 {
-                    newShape.SetTexture(new Texture(new Bitmap(imagePath[0])));
+                    newShape.SetTexture(new Texture(new Bitmap(imagePath[index/3])));
                 }
                 entity.AddShape(newShape);
             }
