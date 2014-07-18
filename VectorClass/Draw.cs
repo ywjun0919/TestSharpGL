@@ -348,50 +348,50 @@ namespace TestSharpGL.VectorClass
             }
         }
 
-        public void DrawTriangle1(Entity entity)
-        {
-            int size = m_shape.m_node.GetVertexNum();
-            Vector3D prp = sceneManager.scene.GetCurCamera().PRP;//暂时这样
-            List<Vertex> vertex_Buffer = new List<Vertex>();
-            for (int index = 0; index < size; index += 3)
-            {
-                if (index % 3 != 3)
-                {
-                    Triangle triangle = new Triangle(m_shape.m_node.GetVertex(index), m_shape.m_node.GetVertex(index + 1), m_shape.m_node.GetVertex(index + 2));
+        //public void DrawTriangle1(Entity entity)
+        //{
+        //    int size = m_shape.m_node.GetVertexNum();
+        //    Vector3D prp = sceneManager.scene.GetCurCamera().PRP;//暂时这样
+        //    List<Vertex> vertex_Buffer = new List<Vertex>();
+        //    for (int index = 0; index < size; index += 3)
+        //    {
+        //        if (index % 3 != 3)
+        //        {
+        //            Triangle triangle = new Triangle(m_shape.m_node.GetVertex(index), m_shape.m_node.GetVertex(index + 1), m_shape.m_node.GetVertex(index + 2));
 
-                    for (int i = 0; i < 3; ++i)
-                    {
-                        Vertex v = triangle.m_node.GetVertex(i);
-                        sceneManager.ScenceRender(ref v, triangle.GetN());
-                        Vector2D proVec = Common.ProjectTransform(prp, v.V_Position);
-                        vertex_Buffer.Add(new Vertex(proVec.X, proVec.Y, 1, v.V_Color,v.S,v.T));
-                    }
+        //            for (int i = 0; i < 3; ++i)
+        //            {
+        //                Vertex v = triangle.m_node.GetVertex(i);
+        //                sceneManager.ScenceRender(ref v, triangle.GetN());
+        //                Vector2D proVec = Common.ProjectTransform(prp, v.V_Position);
+        //                vertex_Buffer.Add(new Vertex(proVec.X, proVec.Y, 1, v.V_Color,v.S,v.T));
+        //            }
 
-                }
-            }
+        //        }
+        //    }
 
-            if (m_shape.m_mode == ShapeMode.Triangle)
-            {
-                for (int index = 0; index < vertex_Buffer.Count; index += 3)
-                {
-                        Triangle triangle = new Triangle(vertex_Buffer[index], vertex_Buffer[index + 1], vertex_Buffer[index + 2]);
-                    //裁剪的时候纹理特征也需要赋值的
-                       // Shape shape = triangle.Cut(-50, 50, -50, 50);
-                        Shape shape = triangle;
-                    //需要修改，测试用    
-                       // shape.SetTexture(sceneManager.scene.GetCurTexture());
-                        if (true == shape.m_texture.ISNULL())
-                        {
-                            PolygonFill(shape);
-                        }
-                        else
-                        {
-                            TextureFill(shape);
-                        }
+        //    if (m_shape.m_mode == ShapeMode.Triangle)
+        //    {
+        //        for (int index = 0; index < vertex_Buffer.Count; index += 3)
+        //        {
+        //                Triangle triangle = new Triangle(vertex_Buffer[index], vertex_Buffer[index + 1], vertex_Buffer[index + 2]);
+        //            //裁剪的时候纹理特征也需要赋值的
+        //               // Shape shape = triangle.Cut(-50, 50, -50, 50);
+        //                Shape shape = triangle;
+        //            //需要修改，测试用    
+        //               // shape.SetTexture(sceneManager.scene.GetCurTexture());
+        //                if (true == shape.m_texture.ISNULL())
+        //                {
+        //                    PolygonFill(shape);
+        //                }
+        //                else
+        //                {
+        //                    TextureFill(shape);
+        //                }
 
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
 
         //画实体
         public void DrawEntity(Entity entity)
@@ -418,6 +418,7 @@ namespace TestSharpGL.VectorClass
                 }
                 else 
                 {
+                    newShape = newShape.Cut(-100, 100, -100, 100);
                     TextureFill(newShape);
                 } 
             }

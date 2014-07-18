@@ -46,7 +46,7 @@ namespace TestSharpGL
             camera.U = new Vector3D(1, 0, 0);
             camera.V = new Vector3D(0, 1, 0);
             camera.N = new Vector3D(0, 0, 1);
-
+            
             #region 暂时注释
             //node.Add(new Vertex(0.0f, 50.0f, 0.0f,Color.Red));
             //node.Add(new Vertex(-50.0f, -50.0f, 50.0f, Color.Blue));

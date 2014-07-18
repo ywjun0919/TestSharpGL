@@ -89,7 +89,6 @@ namespace TestSharpGL
         Scene m_scene = new Scene();
 
         //添加光照
-
         public Scene scene
         {
             get { return m_scene; }

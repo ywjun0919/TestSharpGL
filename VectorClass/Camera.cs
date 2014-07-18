@@ -48,7 +48,7 @@ namespace TestSharpGL.VectorClass
         //前裁剪面F
 
         //后裁剪面B
-
+        
         //umin,umax,vmin,vmax
     }
 }

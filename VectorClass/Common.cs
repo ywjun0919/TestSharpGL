@@ -147,8 +147,8 @@ namespace TestSharpGL.VectorClass
             float s = coef.X * v1.S + coef.X * v2.S + coef.X *v3.S;
             float t = coef.Y * v1.T + coef.Y * v2.T + coef.Y * v3.T;
 
-            v.S = s;
-            v.T = t;
+            v.S = Math.Abs(s);
+            v.T = Math.Abs(t);
             return v;
         }
 

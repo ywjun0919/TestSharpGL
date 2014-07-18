@@ -76,7 +76,6 @@ namespace TestSharpGL.VectorClass
                     + (v1.V_Position.Y - newVertex.V_Position.Y) /(v1.V_Position.Y - v2.V_Position.Y) * color2;
                 newVertex.V_Color = Color.FromArgb((int)Math.Abs(color.X % 255), (int)Math.Abs(color.Y % 255), (int)Math.Abs(color.Z % 255));
 
-                
             }
             else//垂直裁剪边
             {
@@ -97,6 +96,10 @@ namespace TestSharpGL.VectorClass
                     newVertex.V_Color = v1.V_Color;
                 }
             }
+
+            //这样计算裁剪的方法有问题，因为对多边形无法进行计算，需要修改方法GetTextureLocation
+               
+            newVertex = Common.GetTextureLocation(newVertex, this.m_node.Vertexs[0], this.m_node.Vertexs[1], this.m_node.Vertexs[2]);
             return newVertex;
         }
 
@@ -184,6 +187,7 @@ namespace TestSharpGL.VectorClass
                 }
                 s = p;//s指向顶点p，p在下次循环指向下一个顶点
             }
+            //shapeOut.SetTexture(this.m_texture);
             return shapeOut;
         }
 
@@ -229,7 +233,7 @@ namespace TestSharpGL.VectorClass
                 node = SutherlandHodgmanPolygonClip(newShape, clipBoundary).m_node;
             if (node != null)
                 newShape = new Shape(node);
-
+            newShape.SetTexture(this.m_texture);
             return newShape;
         }
 
