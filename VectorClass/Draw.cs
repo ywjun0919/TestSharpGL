@@ -635,10 +635,10 @@ namespace TestSharpGL.VectorClass
             for (; x <= xmax; ++x)
             {
                 Vertex vertex = new Vertex(x, y, 1);
-                vertex = Common.GetTextureLocation(new Vertex(x, y, 1), shape.m_node.Vertexs[shape.m_node.Vertexs.Count-1], shape.m_node.Vertexs[0], shape.m_node.Vertexs[1]);
+                vertex = Common.GetTextureLocation(new Vertex(x, y, 1), shape.m_node.Vertexs[0], shape.m_node.Vertexs[1], shape.m_node.Vertexs[2]);
                 color = shape.m_texture.GetTextureColor(vertex.S, vertex.T);
                 DrawPixel(new Vector2D(x, y),color);
-            }
+            }                                                                                                                                                                                                                                        
         }
         //（该方法仅限于使用矩形对多边形进行裁剪）
         /// <summary>

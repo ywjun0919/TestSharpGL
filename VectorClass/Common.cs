@@ -100,6 +100,7 @@ namespace TestSharpGL.VectorClass
 
         public static Vertex GetTextureLocation(Vertex v, Vertex v1, Vertex v2, Vertex v3)
         {
+            #region 已注释
             //Matrix4D matrix = new Matrix4D(
             //    v1.V_Position.X - v2.V_Position.X,v3.V_Position.X - v2.V_Position.X,0,0,
             //    v1.V_Position.Y - v2.V_Position.Y,v3.V_Position.Y - v2.V_Position.Y,0,0,
@@ -134,7 +135,9 @@ namespace TestSharpGL.VectorClass
             //    v.S = 1;
             //if (v.T > 1)
             //    v.T = 1;
+            #endregion
 
+            //v.V_Position.Z = 1;
             Matrix3D matrix = new Matrix3D(
                 v1.V_Position.X ,v2.V_Position.X,v3.V_Position.X,
                 v1.V_Position.Y,v2.V_Position.Y,v3.V_Position.Y,
@@ -144,9 +147,14 @@ namespace TestSharpGL.VectorClass
             matrix.Inverse(ref inverse_Matrix);
 
             Vector3D coef =  new Vector3D(v.V_Position.X, v.V_Position.Y, 1) * inverse_Matrix;
-            float s = coef.X * v1.S + coef.X * v2.S + coef.X *v3.S;
-            float t = coef.Y * v1.T + coef.Y * v2.T + coef.Y * v3.T;
+            float s = coef.X * v1.S + coef.Y * v2.S + coef.Z *v3.S;
+            float t = coef.X * v1.T + coef.Y * v2.T + coef.Z * v3.T;
 
+
+            if (s > 1)
+                s = 1;
+            if (t > 1)
+                t = 1;
             v.S = Math.Abs(s);
             v.T = Math.Abs(t);
             return v;
@@ -154,8 +162,8 @@ namespace TestSharpGL.VectorClass
 
         public static Color GetTextureColor(Bitmap bitmap,float s,float t)
         {
-            int i = (int)(bitmap.Width * s);
-            int j = (int)(bitmap.Height * t);
+            int i = (int)((bitmap.Width-1) * s);
+            int j = (int)((bitmap.Height-1) * t);
             if (i < 0 || j < 0)
                 return Color.Blue;
             if (i >= bitmap.Width || j >= bitmap.Height)

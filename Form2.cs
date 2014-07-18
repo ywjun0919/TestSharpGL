@@ -209,7 +209,7 @@ namespace TestSharpGL
 
                 if (index/3 < imagePath.Length)
                 {
-                    newShape.SetTexture(new Texture(new Bitmap(imagePath[index/3])));
+                    newShape.SetTexture(new Texture(new Bitmap(imagePath[0])));
                 }
                 entity.AddShape(newShape);
             }
@@ -337,15 +337,31 @@ namespace TestSharpGL
             camera.U = new Vector3D(1, 0, 0);
             camera.V = new Vector3D(0, 1, 0);
             camera.N = new Vector3D(0, 0, 1);
-            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-100, 0, 0), camera), Color.Blue, 0.0f, 0.0f));
+
+
             shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(100, 0, 0), camera), Color.Blue, 1.0f, 0.0f));
-            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(0, 50, 100), camera), Color.Blue, 0.0f, 1.0f));
+            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-100, 0, 0), camera), Color.Blue, 0.0f, 0.0f));
+            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-100, 100, 0), camera), Color.Blue, 0.0f, 1.0f));
 
+            shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(100, 0, 0), camera), Color.Blue, 1.0f, 0.0f));
+            shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(100, 100, 0), camera), Color.Blue, 1.0f, 1.0f));
+            shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-100, 100, 0), camera), Color.Blue, 0.0f, 1.0f));
 
+            //shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-100, 0, 0), camera), Color.Blue, 0.0f, 0.0f));
+            //shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(100, 0, 0), camera), Color.Blue, 1.0f, 0.0f));
+            //shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-100, 50, 100), camera), Color.Blue, 0.0f, 1.0f));
+
+            //shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(100, 0, 0), camera), Color.Blue, 0.0f, 0.0f));
+            //shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(100, 50, 100), camera), Color.Blue, 1.0f, 1.0f));
+            //shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-100, 50, 100), camera), Color.Blue, 0.0f, 1.0f));
+
+            Texture texture = new Texture(image);
+            shape1.SetTexture(texture);
+            shape2.SetTexture(texture);
             entity.AddShape(shape1);
             entity.AddShape(shape2);
-            entity.AddShape(shape3);
-            entity.AddShape(shape4);
+            //entity.AddShape(shape3);
+            //entity.AddShape(shape4);
 
            // Color color =image.GetPixel(1,1);
 
