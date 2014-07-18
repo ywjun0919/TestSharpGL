@@ -418,8 +418,18 @@ namespace TestSharpGL.VectorClass
                 }
                 else 
                 {
-                    newShape = newShape.Cut(-100, 100, -100, 100);
-                    TextureFill(newShape);
+                    newShape = newShape.Cut(-300, 300, -300, 300);
+
+                    int triangle_Num = newShape.m_node.Vertexs.Count-2;
+
+                    for (int j = 0; j < triangle_Num; ++j)
+                    {
+                        /*将多边形划分成多个三角形分别填充（感觉速度有点慢啊）*/
+                        Triangle triangle = new Triangle(newShape.m_node.Vertexs[0], newShape.m_node.Vertexs[j + 1], newShape.m_node.Vertexs[j+2]);
+                        triangle.SetTexture(newShape.m_texture);
+                        TextureFill(triangle);
+                    }
+                   
                 } 
             }
         }

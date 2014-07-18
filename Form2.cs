@@ -318,7 +318,7 @@ namespace TestSharpGL
 
         private void button_AddTexture_Click(object sender, EventArgs e)
         {
-            Bitmap image = new Bitmap(@"D:\1359913743_8809.jpg");
+            Bitmap image = new Bitmap(@"D:\1359913743_88091.jpg");
 
             //shape2.m_node.Add();
             Shape shape1 = new Shape();
@@ -339,13 +339,16 @@ namespace TestSharpGL
             camera.N = new Vector3D(0, 0, 1);
 
 
-            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(100, 0, 0), camera), Color.Blue, 1.0f, 0.0f));
-            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-100, 0, 0), camera), Color.Blue, 0.0f, 0.0f));
-            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-100, 100, 0), camera), Color.Blue, 0.0f, 1.0f));
 
-            shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(100, 0, 0), camera), Color.Blue, 1.0f, 0.0f));
-            shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(100, 100, 0), camera), Color.Blue, 1.0f, 1.0f));
-            shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-100, 100, 0), camera), Color.Blue, 0.0f, 1.0f));
+            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-200, 0, 0), camera), Color.Blue, 1.0f, 1.0f));
+            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(0, 0, 0), camera), Color.Blue, 0.0f, 1.0f));
+            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(0, 200, 0), camera), Color.Blue, 0.0f, 0.0f));
+            shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-200, 200, 0), camera), Color.Blue, 1.0f, 0.0f));
+
+            shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(0, 0, 0), camera), Color.Blue, 1.0f, 1.0f));
+            shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(200, 0, 30), camera), Color.Blue, 0.0f, 1.0f));
+            shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(200, 200, 30), camera), Color.Blue, 0.0f, 0.0f));
+            shape2.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(0, 200, 0), camera), Color.Blue, 1.0f, 0.0f));
 
             //shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(-100, 0, 0), camera), Color.Blue, 0.0f, 0.0f));
             //shape1.m_node.Add(new Vertex(Common.WorldTransform(new Vector3D(100, 0, 0), camera), Color.Blue, 1.0f, 0.0f));
